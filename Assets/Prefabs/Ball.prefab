@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 6743975121640648913}
   - component: {fileID: 6743975121640648927}
   - component: {fileID: 6743975121640648926}
+  - component: {fileID: -1374020323451417306}
   m_Layer: 0
   m_Name: Ball
   m_TagString: Untagged
@@ -140,4 +141,17 @@ MonoBehaviour:
   _additionMovementSpeed: 15
   _maxSpeed: 7
   _turnSpeed: 50
+  _jumpHeight: 700
   _rigidbody: {fileID: 6743975121640648913}
+--- !u!114 &-1374020323451417306
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6743975121640648916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5b72ea6ab430f642ae598a6e9804de7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
