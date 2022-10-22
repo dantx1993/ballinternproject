@@ -8,6 +8,8 @@ namespace BallMaze
 {
     public class GameManager : Singleton<GameManager>
     {
+        public const int MAX_TIME = 180;
+
         [SerializeField] private BallController _ballPrefab;
         [SerializeField] private InputController _inputController;
         [SerializeField] private MapController _mapController;
@@ -15,6 +17,13 @@ namespace BallMaze
 
         private BallController _ballController;
         private EGameState _gameState;
+        private bool _isGameStart;
+        private int _time;
+        private bool _isGameWin;
+        private int _yourScore;
+
+        public bool IsGameWin => _isGameWin;
+        public int YourScore => _yourScore;
 
         public EGameState GameState
         {
@@ -22,19 +31,28 @@ namespace BallMaze
             set
             {
                 _gameState = value;
-                Debug.LogError(_gameState.ToString());
                 _inputController.IsBlockInput = _gameState != EGameState.Gameplay;
+                EventHub.Instance.UpdateEvent(ActionKeyDefine.STATE_KEY, _gameState);
                 switch (_gameState)
                 {
                     case EGameState.MainMenu:
                         break;
                     case EGameState.Prepare:
+                        _time = MAX_TIME;
+                        EventHub.Instance.UpdateEvent(ActionKeyDefine.COUNTDOWN_KEY, _time);
+                        SpawnBall();
                         break;
-                    case EGameState.Gameplay:                        
+                    case EGameState.Gameplay:
+                        if(!_isGameStart)
+                        {
+                            Countdown();
+                            _isGameStart = true;
+                        }
                         break;
                     case EGameState.GamePause:
                         break;
                     case EGameState.GameOver:
+                        _ballController.BallMovement.Stop();
                         break;
                 }
             }
@@ -43,8 +61,7 @@ namespace BallMaze
         private void Awake() 
         {
             GameState = EGameState.MainMenu;
-            SpawnBall();
-            GameState = EGameState.Prepare;
+            _isGameStart = false;
         }
 
         private void SpawnBall()
@@ -59,9 +76,31 @@ namespace BallMaze
         {
             if(GameState == EGameState.Gameplay || GameState == EGameState.GamePause)
             {
-                Debug.Log($"IsWin {isWin}");
+                _isGameWin = isWin;
+                CaculateScore(_isGameWin);
                 GameState = EGameState.GameOver;
             }
         }
+
+        public void CaculateScore(bool isWin)
+        {
+            _yourScore = isWin ? _time : 0;
+        }
+
+        private void Countdown()
+        {
+            Observable
+                .Interval(System.TimeSpan.FromSeconds(1))
+                .TakeWhile(l => l >= 0 && _gameState != EGameState.GameOver)
+                .Subscribe(l =>
+                {
+                    _time -= 1;
+                    EventHub.Instance.UpdateEvent(ActionKeyDefine.COUNTDOWN_KEY, _time);
+                }, () =>
+                {
+                    WinGame(false);
+                }).AddTo(this.gameObject);
+        }
     }
 }
+;

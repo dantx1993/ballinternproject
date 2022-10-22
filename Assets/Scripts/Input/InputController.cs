@@ -20,10 +20,6 @@ namespace BallMaze
 
         private void Update() 
         {
-            if(Input.GetKeyDown(KeyCode.Space))
-            {
-                Debug.Log("Space");
-            }
             if(!_isBlockInput)
             {
                 _inputAxis = new Vector3(Input.GetAxisRaw("Vertical"), 0, Input.GetAxisRaw("Horizontal"));

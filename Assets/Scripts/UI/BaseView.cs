@@ -16,17 +16,12 @@ namespace BallMaze
         private Action _onHideView;
         private Action _onShowView;
         protected LTDescr _anim;
-        protected LTDescr _delay;
 
         protected virtual void OnDisable() 
         {
             if(_anim != null)
             {
                 LeanTween.cancel(_anim.id);
-            }
-            if(_delay != null)
-            {
-                LeanTween.cancel(_delay.id);
             }
         }
 
@@ -93,14 +88,14 @@ namespace BallMaze
         {
             if (!isShow)
             {
-                _delay = LeanTween.delayedCall(Time.deltaTime, () =>
+                this.ActionWaitForEndOfFrame(() =>
                 {
                     if (isTriggerHideAction) _onHideView?.Invoke();
                     _root.gameObject.SetActive(false);
                 });
                 return;
             }
-            _delay = LeanTween.delayedCall(0.1f, () =>
+            this.ActionWaitTime(0.1f, () =>
             {
                 _onShowView?.Invoke();
             });

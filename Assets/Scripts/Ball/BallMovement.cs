@@ -85,10 +85,13 @@ namespace BallMaze
                 .AppendInterval(2f)
                 .OnComplete(() => 
                 {
-                    Debug.Log("Completed");
                     _isOnBoost = false;
                 })
                 .Play();
+        }
+        public void Stop()
+        {
+            _rigidbody.velocity = Vector3.zero;
         }
     }
 }
