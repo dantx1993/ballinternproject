@@ -79,6 +79,10 @@ namespace BallMaze
             {
                 _leaderboardPopup.Show(StorageUserInfo.Instance.HighScore);
             });
+            _mainMenuView.OnExitClicked.Subscribe(_ =>
+            {
+                Application.Quit();
+            });
         }
         private void InitGameplayView()
         {
